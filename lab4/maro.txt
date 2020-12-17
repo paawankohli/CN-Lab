@@ -1,0 +1,132 @@
+R1 IP configurations:
+
+R1#enable
+R1#conf t
+
+R1(config)#hostname R1
+R1(config)#interface f0/0
+
+R1(config-if)#ip address 10.10.10.1 255.255.255.0
+R1(config-if)#no shut
+R1(config-if)#do 
+R1(config-if)#do wr
+R1(config-if)#end
+
+R2 IP and Hostname Configurations:
+
+R2#enable
+R2#conf t
+R2(config)#hostname R2
+R2(config)#int f0/0
+R2(config-if)#ip address 10.10.10.2 255.255.255.0
+R2(config-if)#no shutdown
+R2(config-if)#do wr
+R2(config-if)#end
+
+Setting up R2 as DNS Server
+
+R2#conf t
+
+R2(config)#ip dns server
+R2(config)#ip host loopback.R2.com 2.2.2.2
+
+create loopback interface on R2
+
+R2(config)#interface loopback1
+R2(config-if)#ip address 2.2.2.2 255.255.255.255
+R2(config-if)#end
+
+try pinging to check loopback
+
+R2#ping loopback.R2.com     
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 2.2.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R2#
+
+
+Setup R1 to resolve hostnames
+
+R1#conf t
+R1(config)#ip domain lookup
+R1(config)#ip name-server 10.10.10.2
+R1(config)#ip route 0.0.0.0 0.0.0.0 10.10.10.2
+R1(config)#end
+
+
+ping from R1 to R2
+
+R1#ping loopback.R2.com
+
+Translating "loopback.R2.com"...domain server (10.10.10.2) [OK]
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 2.2.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 64/67/72 ms
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Setting up 3 interfaces on R2
+
+R2#enable
+R2#conf t
+
+R2(config)#int f0/0
+R2(config-if)#ip address 40.40.40.1 255.255.255.0
+R2(config-if)#no shut
+R2(config-if)#do wr
+R2(config-if)#exit
+
+R2(config)#int f0/1                           
+R2(config-if)#ip address 10.10.10.1 255.255.255.0
+R2(config-if)#no shut                            
+R2(config-if)#do wr
+R2(config-if)#exit
+
+R2(config)#int f1/0                           
+R2(config-if)#ip address 30.30.30.1 255.255.255.0
+R2(config-if)#no shut
+R2(config-if)#do wr
+R2(config-if)#exit
+
+Setup interface and dns on R1
+
+R1#enable
+R1#conf t
+R1(config)#int f0/0
+R1(config-if)#ip address 40.40.40.3 255.255.255.0
+R1(config-if)#no shut
+R1(config-if)#do wr
+R1(config-if)#end
+
+R1#conf t
+R1(config)#ip dns server
+R1(config)#ip host pc1.com 10.10.10.2
+R1(config)#ip host pc2.com 30.30.30.2 
+
+give IP to PC1 and PC2
+
+PC1> ip 10.10.10.2 255.255.255.0 10.10.10.1                
+Checking for duplicate address...
+PC1 : 10.10.10.2 255.255.255.0 gateway 10.10.10.1
+
+PC2> ip 30.30.30.2 255.255.255.0 30.30.30.1
+Checking for duplicate address...
+PC2 : 30.30.30.2 255.255.255.0 gateway 30.30.30.1
