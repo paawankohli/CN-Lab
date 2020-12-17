@@ -49,8 +49,6 @@ void main() {
     }
 
     while (1) {
-        char ch;
-
         int clientfd = accept(serverfd, (struct sockaddr *)&client_address, &len);
 
         // get time and store it properly

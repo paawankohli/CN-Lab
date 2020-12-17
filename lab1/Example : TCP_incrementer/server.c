@@ -40,7 +40,7 @@ void main () {
 	}
 
 	// start listening with max backlog of 5
-	status = listen(serverfd, 10);
+	status = listen(serverfd, 5);
 
 	if (status == -1) {
 		printf("Couldn't start listening! Exited.\n");
@@ -61,9 +61,9 @@ void main () {
 			exit(0);
 		} else {
 			char *clientIP = inet_ntoa(clientAddress.sin_addr);
-			int cleintPort = clientAddress.sin_port;
+			int clientPort = clientAddress.sin_port;
 			printf("Connection request accepted from ");
-			printf("%s : %d\n", clientIP, cleintPort);
+			printf("%s : %d\n", clientIP, clientPort);
 		}
 
 		char ch;

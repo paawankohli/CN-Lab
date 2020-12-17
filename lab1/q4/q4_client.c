@@ -12,10 +12,6 @@
 #define PORT 9734
 
 void main() {
-    char ch;
-    char time[100];
-    char processid[100];
-
     // create a TCP socket
     int serverfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -46,8 +42,12 @@ void main() {
         printf("Connection established!\n\n");
     }
 
+    char time[100];
+
     read(serverfd, time, 100);
     printf("Server Time: %s\n", time);
+
+    char processid[100];
 
     read(serverfd, processid, 100);
     printf("Server proccess ID: %s\n", processid);
